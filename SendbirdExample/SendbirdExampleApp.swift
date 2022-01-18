@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct SendbirdExampleApp: App {
+    init() {
+        Environment.setup()
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            IntroView()
         }
     }
 }
