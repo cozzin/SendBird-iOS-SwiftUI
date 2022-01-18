@@ -12,7 +12,7 @@ struct IntroView: View {
     
     var body: some View {
         if viewModel.isLoggedIn {
-            ChannelListView()
+            GroupChannelListView()
         } else {
             loginView
         }
