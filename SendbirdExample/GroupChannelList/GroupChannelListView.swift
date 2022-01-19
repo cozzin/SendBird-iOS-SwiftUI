@@ -23,6 +23,10 @@ struct GroupChannelListView: View {
         .task {
             await viewModel.loadNextChannels()
         }
+        .refreshable {
+            await viewModel.refreshChannels()
+        }
+        .navigationTitle(Text("Channel"))
     }
 }
 

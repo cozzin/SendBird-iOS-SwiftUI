@@ -15,14 +15,12 @@ final class GroupChannelListViewModel: ObservableObject {
     
     private var isNextChannelsLoading: Bool = false
     
-    private lazy var query: SBDGroupChannelListQuery = {
-        let listQuery = SBDGroupChannel.createMyGroupChannelListQuery()
-        listQuery?.includeEmptyChannel = true
-        listQuery?.memberStateFilter = .stateFilterAll // TODO: - Change filter dynamically
-        listQuery?.order = .latestLastMessage
-        listQuery?.limit = 15
-        return SBDGroupChannelListQuery(dictionary: [:])
-    }()
+    private lazy var query: SBDGroupChannelListQuery = createQuery()
+    
+    func refreshChannels() async {
+        query = createQuery()
+        await loadNextChannels()
+    }
     
     func loadNextChannels() async {
         guard query.isLoading() == false else { return }
@@ -34,15 +32,22 @@ final class GroupChannelListViewModel: ObservableObject {
             return
         }
         
-        guard let channels = channels else {
-            return
-        }
+        guard let channels = channels else { return }
         
         self.channels.append(contentsOf: channels.map(GroupChannel.init))
     }
     
     func isLastChannel(_ channel: GroupChannel) -> Bool {
         channels.last == channel
+    }
+    
+    private func createQuery() -> SBDGroupChannelListQuery {
+        let listQuery = SBDGroupChannel.createMyGroupChannelListQuery()
+        listQuery?.includeEmptyChannel = true
+        listQuery?.memberStateFilter = .stateFilterAll // TODO: - Change filter dynamically
+        listQuery?.order = .latestLastMessage
+        listQuery?.limit = 15
+        return SBDGroupChannelListQuery(dictionary: [:])
     }
     
 }
@@ -63,6 +68,10 @@ extension GroupChannelListViewModel {
         
         var name: String {
             rawValue.name
+        }
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.rawValue == rhs.rawValue
         }
     }
     
