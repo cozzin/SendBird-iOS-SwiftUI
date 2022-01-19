@@ -24,21 +24,21 @@ final class GroupChannelListViewModel: ObservableObject {
         return SBDGroupChannelListQuery(dictionary: [:])
     }()
     
-    func loadNextChannels() {
+    func loadNextChannels() async {
         guard query.isLoading() == false else { return }
         
-        query.loadNextPage { [weak self] channels, error in
-            if let error = error {
-                self?.alert = .groupChannelQueryError(error)
-                return
-            }
-            
-            guard let channels = channels else {
-                return
-            }
-            
-            self?.channels.append(contentsOf: channels.map(GroupChannel.init))
+        let (channels, error) = await query.loadNextPage()
+        
+        if let error = error {
+            alert = .groupChannelQueryError(error)
+            return
         }
+        
+        guard let channels = channels else {
+            return
+        }
+        
+        self.channels.append(contentsOf: channels.map(GroupChannel.init))
     }
     
     func isLastChannel(_ channel: GroupChannel) -> Bool {

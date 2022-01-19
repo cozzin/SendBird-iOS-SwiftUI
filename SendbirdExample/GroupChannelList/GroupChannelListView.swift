@@ -14,14 +14,14 @@ struct GroupChannelListView: View {
     var body: some View {
         List(viewModel.channels) { channel in
             Text("\(channel.name)")
-                .onAppear {
+                .task {
                     if viewModel.isLastChannel(channel) {
-                        viewModel.loadNextChannels()
+                        await viewModel.loadNextChannels()
                     }
                 }
         }
-        .onAppear {
-            viewModel.loadNextChannels()
+        .task {
+            await viewModel.loadNextChannels()
         }
     }
 }
