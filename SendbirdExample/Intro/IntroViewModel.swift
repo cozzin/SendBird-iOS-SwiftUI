@@ -10,8 +10,12 @@ import SendBirdSDK
 import SwiftUI
 
 final class IntroViewModel: ObservableObject {
-        
-    @Published var userId: String = ""
+    
+    private enum Constant {
+        static let userIdStroageKey: String = "IntroViewModel.userId"
+    }
+    
+    @Published var userId: String = UserDefaults.standard.string(forKey: Constant.userIdStroageKey) ?? ""
     @Published var alert: AlertIdentifier?
     @Published var user: SBDUser?
     
@@ -24,6 +28,7 @@ final class IntroViewModel: ObservableObject {
     }
     
     func login() {
+        UserDefaults.standard.set(userId, forKey: Constant.userIdStroageKey)
         SBDMain.connect(withUserId: userId) { [weak self] user, error in
             if let error = error {
                 self?.alert = .loginError(error)

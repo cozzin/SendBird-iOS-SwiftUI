@@ -11,10 +11,12 @@ struct IntroView: View {
     @StateObject var viewModel = IntroViewModel()
     
     var body: some View {
-        if viewModel.isLoggedIn {
-            ChannelListView()
-        } else {
-            loginView
+        NavigationView {
+            if viewModel.isLoggedIn {
+                GroupChannelListView()
+            } else {
+                loginView
+            }
         }
     }
     
@@ -29,6 +31,7 @@ struct IntroView: View {
             .disabled(viewModel.isLoginButtonDisabled)
         }
         .padding()
+        .navigationTitle(Text("Sendbird"))
     }
 }
 
