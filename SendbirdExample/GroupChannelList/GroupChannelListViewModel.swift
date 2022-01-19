@@ -19,6 +19,7 @@ final class GroupChannelListViewModel: ObservableObject {
     
     func refreshChannels() async {
         query = createQuery()
+        channels = []
         await loadNextChannels()
     }
     
@@ -34,7 +35,9 @@ final class GroupChannelListViewModel: ObservableObject {
         
         guard let channels = channels else { return }
         
-        self.channels.append(contentsOf: channels.map(GroupChannel.init))
+        DispatchQueue.main.async { [weak self] in
+            self?.channels.append(contentsOf: channels.map(GroupChannel.init))
+        }
     }
     
     func isLastChannel(_ channel: GroupChannel) -> Bool {
@@ -44,10 +47,9 @@ final class GroupChannelListViewModel: ObservableObject {
     private func createQuery() -> SBDGroupChannelListQuery {
         let listQuery = SBDGroupChannel.createMyGroupChannelListQuery()
         listQuery?.includeEmptyChannel = true
-        listQuery?.memberStateFilter = .stateFilterAll // TODO: - Change filter dynamically
         listQuery?.order = .latestLastMessage
         listQuery?.limit = 15
-        return SBDGroupChannelListQuery(dictionary: [:])
+        return listQuery ?? SBDGroupChannelListQuery(dictionary: [:])
     }
     
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GroupChannelListView: View {
     
-    private var viewModel = GroupChannelListViewModel()
+    @ObservedObject private var viewModel = GroupChannelListViewModel()
     
     var body: some View {
         List(viewModel.channels) { channel in
