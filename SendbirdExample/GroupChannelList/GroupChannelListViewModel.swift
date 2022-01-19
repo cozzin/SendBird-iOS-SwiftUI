@@ -7,36 +7,43 @@
 
 import Foundation
 import SendBirdSDK
+import SwiftUI
 
 final class GroupChannelListViewModel: ObservableObject {
     
-    @Published var channels: [GroupChannel] = []
     @Published var alert: AlertIdentifier?
+    @Published private(set) var channels: [GroupChannel] = []
     
     private var isNextChannelsLoading: Bool = false
-    
     private lazy var query: SBDGroupChannelListQuery = createQuery()
     
     func refreshChannels() async {
         query = createQuery()
-        channels = []
-        await loadNextChannels()
+
+        do {
+            let channels = try await query.loadNextPageChannels()
+
+            DispatchQueue.main.async { [weak self] in
+                self?.channels = channels.map(GroupChannel.init)
+            }
+        } catch {
+            DispatchQueue.main.async { [weak self] in
+                self?.alert = .queryError(error)
+            }
+        }
     }
     
     func loadNextChannels() async {
-        guard query.isLoading() == false else { return }
-        
-        let (channels, error) = await query.loadNextPage()
-        
-        if let error = error {
-            alert = .groupChannelQueryError(error)
-            return
-        }
-        
-        guard let channels = channels else { return }
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.channels.append(contentsOf: channels.map(GroupChannel.init))
+        do {
+            let channels = try await query.loadNextPageChannels()
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.channels.append(contentsOf: channels.map(GroupChannel.init))
+            }
+        } catch {
+            DispatchQueue.main.async { [weak self] in
+                self?.alert = .queryError(error)
+            }
         }
     }
     
@@ -51,8 +58,10 @@ final class GroupChannelListViewModel: ObservableObject {
         listQuery?.limit = 15
         return listQuery ?? SBDGroupChannelListQuery(dictionary: [:])
     }
-    
+        
 }
+
+// MARK: - GroupChannel
 
 extension GroupChannelListViewModel {
     
@@ -79,24 +88,47 @@ extension GroupChannelListViewModel {
     
 }
 
+// MARK: - AlertIdentifier
+
 extension GroupChannelListViewModel {
     
     enum AlertIdentifier: Identifiable {
-        case groupChannelQueryError(SBDError)
-        
         var id: String {
-            switch self {
-            case .groupChannelQueryError(let error):
-                return "groupChannelQueryError.\(error.code)"
-            }
+            String(describing: self)
         }
         
         var message: String {
             switch self {
-            case .groupChannelQueryError(let error):
-                return error.localizedDescription
+            case .queryError(let error):
+                if let error = error as? SBDError {
+                    return error.localizedDescription
+                }
             }
+            
+            return "Unknown error"
         }
+        
+        case queryError(Error)
+    }
+    
+}
+
+// MARK: - SBDGroupChannelListQuery
+
+extension SBDGroupChannelListQuery {
+    
+    func loadNextPageChannels() async throws -> [SBDGroupChannel] {
+        let (channels, error) = await loadNextPage()
+        
+        if let error = error {
+            throw error
+        }
+        
+        guard let channels = channels else {
+            return []
+        }
+        
+        return channels
     }
 
 }
