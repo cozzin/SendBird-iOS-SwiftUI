@@ -25,6 +25,7 @@ struct IntroView: View {
             Text("Welcome to Sendbird Chat 👋")
             TextField("Input UserId", text: $viewModel.userId)
                 .multilineTextAlignment(.center)
+            Spacer()
             Button("Login") {
                 viewModel.login()
             }

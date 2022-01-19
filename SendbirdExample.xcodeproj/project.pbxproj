@@ -13,6 +13,9 @@
 		5FD29D352796B223000CBF5E /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D342796B223000CBF5E /* IntroView.swift */; };
 		5FD29D3C2796EDF9000CBF5E /* GroupChannelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D3B2796EDF9000CBF5E /* GroupChannelListView.swift */; };
 		5FD29D3E2796F4BA000CBF5E /* GroupChannelListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D3D2796F4BA000CBF5E /* GroupChannelListViewModel.swift */; };
+		5FD29D432797DD96000CBF5E /* CreateGroupChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D422797DD96000CBF5E /* CreateGroupChannelView.swift */; };
+		5FD29D452797DDA1000CBF5E /* CreateGroupChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D442797DDA1000CBF5E /* CreateGroupChannelViewModel.swift */; };
+		5FD29D482797FE5B000CBF5E /* GroupChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D472797FE5B000CBF5E /* GroupChannelView.swift */; };
 		5FE826BB2796537C0086D338 /* SendbirdExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE826BA2796537C0086D338 /* SendbirdExampleApp.swift */; };
 		5FE826BF2796537C0086D338 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FE826BE2796537C0086D338 /* Assets.xcassets */; };
 		5FE826C22796537C0086D338 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FE826C12796537C0086D338 /* Preview Assets.xcassets */; };
@@ -44,6 +47,9 @@
 		5FD29D342796B223000CBF5E /* IntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroView.swift; sourceTree = "<group>"; };
 		5FD29D3B2796EDF9000CBF5E /* GroupChannelListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChannelListView.swift; sourceTree = "<group>"; };
 		5FD29D3D2796F4BA000CBF5E /* GroupChannelListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChannelListViewModel.swift; sourceTree = "<group>"; };
+		5FD29D422797DD96000CBF5E /* CreateGroupChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupChannelView.swift; sourceTree = "<group>"; };
+		5FD29D442797DDA1000CBF5E /* CreateGroupChannelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateGroupChannelViewModel.swift; sourceTree = "<group>"; };
+		5FD29D472797FE5B000CBF5E /* GroupChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChannelView.swift; sourceTree = "<group>"; };
 		5FE826B72796537C0086D338 /* SendbirdExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SendbirdExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FE826BA2796537C0086D338 /* SendbirdExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendbirdExampleApp.swift; sourceTree = "<group>"; };
 		5FE826BE2796537C0086D338 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -99,6 +105,23 @@
 			path = GroupChannelList;
 			sourceTree = "<group>";
 		};
+		5FD29D3F2797DD78000CBF5E /* CreateGroupChannel */ = {
+			isa = PBXGroup;
+			children = (
+				5FD29D422797DD96000CBF5E /* CreateGroupChannelView.swift */,
+				5FD29D442797DDA1000CBF5E /* CreateGroupChannelViewModel.swift */,
+			);
+			path = CreateGroupChannel;
+			sourceTree = "<group>";
+		};
+		5FD29D462797FE4F000CBF5E /* GroupChannel */ = {
+			isa = PBXGroup;
+			children = (
+				5FD29D472797FE5B000CBF5E /* GroupChannelView.swift */,
+			);
+			path = GroupChannel;
+			sourceTree = "<group>";
+		};
 		5FE826AE2796537C0086D338 = {
 			isa = PBXGroup;
 			children = (
@@ -122,8 +145,10 @@
 		5FE826B92796537C0086D338 /* SendbirdExample */ = {
 			isa = PBXGroup;
 			children = (
-				5FD29D382796EDDB000CBF5E /* GroupChannelList */,
 				5FD29D332796B202000CBF5E /* Intro */,
+				5FD29D382796EDDB000CBF5E /* GroupChannelList */,
+				5FD29D3F2797DD78000CBF5E /* CreateGroupChannel */,
+				5FD29D462797FE4F000CBF5E /* GroupChannel */,
 				5FD29D29279693A1000CBF5E /* Environment.swift */,
 				5FE826BA2796537C0086D338 /* SendbirdExampleApp.swift */,
 				5FE826BE2796537C0086D338 /* Assets.xcassets */,
@@ -295,9 +320,12 @@
 			files = (
 				5FD29D2A279693A1000CBF5E /* Environment.swift in Sources */,
 				5FD29D3227969C83000CBF5E /* IntroViewModel.swift in Sources */,
+				5FD29D432797DD96000CBF5E /* CreateGroupChannelView.swift in Sources */,
 				5FD29D3E2796F4BA000CBF5E /* GroupChannelListViewModel.swift in Sources */,
 				5FD29D3C2796EDF9000CBF5E /* GroupChannelListView.swift in Sources */,
+				5FD29D482797FE5B000CBF5E /* GroupChannelView.swift in Sources */,
 				5FE826BB2796537C0086D338 /* SendbirdExampleApp.swift in Sources */,
+				5FD29D452797DDA1000CBF5E /* CreateGroupChannelViewModel.swift in Sources */,
 				5FD29D352796B223000CBF5E /* IntroView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

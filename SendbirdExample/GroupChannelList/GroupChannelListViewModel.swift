@@ -67,7 +67,7 @@ extension GroupChannelListViewModel {
     
     struct GroupChannel: Identifiable, Equatable {
         
-        private let rawValue: SBDGroupChannel
+        let rawValue: SBDGroupChannel
         
         init(_ rawValue: SBDGroupChannel) {
             self.rawValue = rawValue
