@@ -10,9 +10,15 @@ import SendBirdSDK
 
 final class GroupChannelViewModel: NSObject, ObservableObject {
     
+    private enum Constants {
+        static let loadPreviousMessageLimit: Int = 15
+    }
+    
     @Published var messages: [SBDBaseMessage] = []
     
     @Published var inputText: String = ""
+    
+    @Published var hasPreviousMessages: Bool = true
     
     var channelName: String {
         channel.name
@@ -24,6 +30,10 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
     
     var isEmpty: Bool {
         messages.isEmpty
+    }
+    
+    var isDisabledSendButton: Bool {
+        inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
     private let channel: SBDGroupChannel
@@ -52,7 +62,7 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
             return
         }
         
-        let (messages, error) = await listQuery.loadPreviousMessages(withLimit: 5, reverse: false)
+        let (messages, error) = await listQuery.loadPreviousMessages(withLimit: Constants.loadPreviousMessageLimit, reverse: false)
         
         guard error == nil else {
             // TODO: - Error Handling
@@ -60,6 +70,10 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
         }
         
         guard let messages = messages else { return }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.hasPreviousMessages = messages.count >= Constants.loadPreviousMessageLimit
+        }
         
         guard messages.isEmpty == false else {
             return
@@ -70,8 +84,15 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
         }
     }
     
-    func isFirstMessage(_ message: SBDBaseMessage) -> Bool {
-        messages.first == message
+    func message(before givenMessage: SBDBaseMessage?) -> SBDBaseMessage? {
+        guard let givenMessage = givenMessage,
+              let givenIndex = messages.firstIndex(of: givenMessage) else {
+            return nil
+        }
+        
+        let resultIndex = givenIndex - 1
+        
+        return resultIndex >= 0 ? messages[resultIndex] : nil
     }
     
     func sendMessage() async throws {

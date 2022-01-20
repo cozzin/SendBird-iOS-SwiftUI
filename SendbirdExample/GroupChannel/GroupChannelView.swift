@@ -12,57 +12,90 @@ struct GroupChannelView: View {
     
     @ObservedObject private var viewModel: GroupChannelViewModel
     @State private var errorMessage: String?
+    @FocusState private var isTyping: Bool
 
     init(channel: SBDGroupChannel) {
         _viewModel = .init(initialValue: .init(channel: channel))
     }
     
     var body: some View {
-        VStack {
-            messageList
-            inputView
+        ScrollViewReader { scrollViewProxy in
+            VStack(spacing: 0) {
+                scrollView(with: scrollViewProxy)
+                inputView(with: scrollViewProxy)
+            }
         }
-    }
-    
-    private var messageList: some View {
-        List(viewModel.messages) { message in
-            GroupChannelMessageView(message: message)
-                .id(message)
-                .task {
-                    guard viewModel.isFirstMessage(message) else { return }
-                    
-                    await viewModel.loadPreviousMessages()
-                }
-        }
-        .listStyle(.plain)
         .navigationTitle(Text(viewModel.navigationTitle))
-        .task {
-            guard viewModel.isEmpty else { return }
-            
-            await viewModel.loadPreviousMessages()
-        }
-        .onAppear {
-            viewModel.onAppear()
-        }
-        .onDisappear {
-            viewModel.onDisappear()
+    }
+    
+    private func scrollView(with scrollViewProxy: ScrollViewProxy) -> some View {
+        ScrollView(.vertical) {
+            LazyVStack {
+                if viewModel.hasPreviousMessages {
+                    loadPreviousMessagesButton(with: scrollViewProxy)
+                }
+                
+                ForEach(viewModel.messages) { message in
+                    GroupChannelMessageView(message: message)
+                }
+            }
+            .task {
+                guard viewModel.isEmpty else { return }
+                await viewModel.loadPreviousMessages()
+                scrollToBottom(scrollViewProxy)
+            }
+            .onAppear {
+                viewModel.onAppear()
+            }
+            .onDisappear {
+                viewModel.onDisappear()
+            }
+            .onChange(of: viewModel.messages) { newValue in
+                scrollToBottom(scrollViewProxy)
+            }
         }
     }
     
-    private var inputView: some View {
-        HStack {
-            TextField("Say something...", text: $viewModel.inputText)
-            Button("Send") {
-                Task {
-                    do {
-                        try await viewModel.sendMessage()
-                    } catch {
-                        errorMessage = error.localizedDescription
-                    }
+    private func loadPreviousMessagesButton(with scrollViewProxy: ScrollViewProxy) -> some View {
+        Button("Load Previous Messages") {
+            let oldFirstMessage = viewModel.messages.first
+            
+            Task {
+                await viewModel.loadPreviousMessages()
+                DispatchQueue.main.async {
+                    scrollViewProxy.scrollTo(viewModel.message(before: oldFirstMessage), anchor: .top)
                 }
             }
         }
+    }
+
+    private func inputView(with scrollViewProxy: ScrollViewProxy) -> some View {
+        HStack {
+            TextField("Say something...", text: $viewModel.inputText, onCommit: {
+                sendMessage()
+                isTyping = true
+            }).focused($isTyping)
+            
+            Button("Send") {
+                sendMessage()
+            }.disabled(viewModel.isDisabledSendButton)
+        }
         .padding()
+    }
+    
+    private func sendMessage() {
+        Task {
+            do {
+                try await viewModel.sendMessage()
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+    
+    private func scrollToBottom(_ scrollViewProxy: ScrollViewProxy) {
+        guard let lastMessage = viewModel.messages.last else { return }
+        scrollViewProxy.scrollTo(lastMessage, anchor: .bottom)
     }
 }
 

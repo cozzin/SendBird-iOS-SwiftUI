@@ -33,6 +33,7 @@ struct GroupChannelMessageView: View {
                     .fill(Color(UIColor.secondarySystemBackground))
             )
         }
-        .padding(.vertical, 5)
+        .padding(5)
+        .id(message)
     }
 }
