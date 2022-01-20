@@ -16,7 +16,7 @@ struct GroupChannelListView: View {
     
     var body: some View {
         List(viewModel.channels) { channel in
-            NavigationLink(destination: GroupChannelView(channel: channel.rawValue)) {
+            NavigationLink(destination: GroupChannelView(viewModel: .init(channel: channel.rawValue))) {
                 Text("\(channel.name)")
                     .task {
                         if viewModel.isLastChannel(channel) {

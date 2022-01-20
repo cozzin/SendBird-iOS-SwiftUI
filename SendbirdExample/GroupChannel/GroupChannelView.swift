@@ -10,16 +10,26 @@ import SendBirdSDK
 
 struct GroupChannelView: View {
     
-    let channel: SBDGroupChannel
+    @ObservedObject private var viewModel: GroupChannelViewModel
+    
+    init(viewModel: GroupChannelViewModel) {
+        _viewModel = .init(initialValue: viewModel)
+    }
     
     var body: some View {
-        Text("Hello, \(channel.name)!")
-            .navigationTitle(Text(channel.name + " (\(channel.memberCount))"))
+        List(viewModel.messages) { message in
+            GroupChannelMessageView(message: message)
+        }
+        .listStyle(.plain)
+        .navigationTitle(Text(viewModel.navigationTitle))
+        .task {
+            await viewModel.loadPreviousMessages()
+        }
     }
 }
 
 struct GroupChannelView_Previews: PreviewProvider {
     static var previews: some View {
-        GroupChannelView(channel: .init(dictionary: [:]))
+        GroupChannelView(viewModel: .init(channel: .init(dictionary: [:])))
     }
 }
