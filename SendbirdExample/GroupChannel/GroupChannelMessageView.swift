@@ -12,6 +12,8 @@ struct GroupChannelMessageView: View {
     
     let message: SBDBaseMessage
     
+    let onLongPress: () -> Void
+    
     var body: some View {
         HStack {
             if let sender = message.sender {
@@ -32,6 +34,10 @@ struct GroupChannelMessageView: View {
                 RoundedRectangle(cornerRadius: 25)
                     .fill(Color(UIColor.secondarySystemBackground))
             )
+            .onTapGesture { }
+            .onLongPressGesture {
+                onLongPress()
+            }
         }
         .padding(5)
         .id(message)

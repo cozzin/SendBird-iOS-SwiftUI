@@ -12,6 +12,7 @@ struct GroupChannelView: View {
     
     @ObservedObject private var viewModel: GroupChannelViewModel
     @State private var errorMessage: String?
+    @State private var alert: AlertIdentifier?
     @FocusState private var isTyping: Bool
 
     init(channel: SBDGroupChannel) {
@@ -36,7 +37,9 @@ struct GroupChannelView: View {
                 }
                 
                 ForEach(viewModel.messages) { message in
-                    GroupChannelMessageView(message: message)
+                    GroupChannelMessageView(message: message, onLongPress: {
+                        alert = .longPressMessage(message)
+                    })
                 }
             }
             .task {
@@ -52,6 +55,24 @@ struct GroupChannelView: View {
             }
             .onChange(of: viewModel.messages) { newValue in
                 scrollToBottom(scrollViewProxy)
+            }
+            .alert(item: $alert) { alertIdentifier in
+                switch alertIdentifier {
+                case .longPressMessage(let message):
+                    return Alert(
+                        title: Text("Are you sure you want to delete the message?"),
+                        message: Text(message.message),
+                        primaryButton: .destructive(
+                            Text("Delete"),
+                            action: {
+                                Task {
+                                    try await viewModel.deleteMessage(message)
+                                }
+                            }
+                        ),
+                        secondaryButton: .cancel()
+                    )
+                }
             }
         }
     }
@@ -97,6 +118,35 @@ struct GroupChannelView: View {
         guard let lastMessage = viewModel.messages.last else { return }
         scrollViewProxy.scrollTo(lastMessage, anchor: .bottom)
     }
+}
+
+
+// MARK: - Alert
+
+extension GroupChannelView {
+    
+    enum AlertIdentifier: Identifiable {
+        var id: String {
+            switch self {
+            case .longPressMessage(let message):
+                return "longPressMessage.\(message.messageId)"
+            }
+        }
+        
+        var title: String {
+            "Are you sure you want to delete the message?"
+        }
+        
+        var message: String {
+            switch self {
+            case .longPressMessage(let message):
+                return "longPressMessage.\(message.message)"
+            }
+        }
+        
+        case longPressMessage(SBDBaseMessage)
+    }
+    
 }
 
 struct GroupChannelView_Previews: PreviewProvider {

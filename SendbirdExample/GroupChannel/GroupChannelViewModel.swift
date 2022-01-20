@@ -116,6 +116,14 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
             self?.messages.append(message)
         }
     }
+    
+    func deleteMessage(_ message: SBDBaseMessage) async throws {
+        let error = await channel.delete(message)
+        
+        if let error = error {
+            throw error
+        }
+    }
 }
 
 // MARK: - SBDChannelDelegate
@@ -124,6 +132,10 @@ extension GroupChannelViewModel: SBDChannelDelegate {
     
     func channel(_ sender: SBDBaseChannel, didReceive message: SBDBaseMessage) {
         messages.append(message)
+    }
+    
+    func channel(_ sender: SBDBaseChannel, messageWasDeleted messageId: Int64) {
+        messages = messages.filter { $0.messageId != messageId }
     }
     
 }
