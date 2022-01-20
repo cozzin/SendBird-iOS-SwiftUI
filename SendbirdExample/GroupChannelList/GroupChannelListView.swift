@@ -10,9 +10,10 @@ import SendBirdSDK
 
 struct GroupChannelListView: View {
     
-    @ObservedObject private var viewModel = GroupChannelListViewModel()
+    @ObservedObject var viewModel: GroupChannelListViewModel
     @State private var alert: Alert?
     @State private var isShowingCreateChannel: Bool = false
+    @State private var isShowingProfile: Bool = false
     
     var body: some View {
         List(viewModel.channels) { channel in
@@ -49,8 +50,25 @@ struct GroupChannelListView: View {
                 }
             }
         )
+        .sheet(
+            isPresented: $isShowingProfile,
+            content: {
+                NavigationView {
+                    ProfileSettingView(
+                        viewModel: .init(user: viewModel.user, isShowing: $isShowingProfile)
+                    )
+                }
+            }
+        )
         .navigationTitle(Text("Channel"))
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { isShowingProfile = true }) {
+                    Image(systemName: "person.circle")
+                }
+                .accessibilityLabel("Create Group Channel")
+            }
+
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { isShowingCreateChannel = true }) {
                     Image(systemName: "plus")
@@ -58,11 +76,5 @@ struct GroupChannelListView: View {
                 .accessibilityLabel("Create Group Channel")
             }
         }
-    }
-}
-
-struct GroupChannelListView_Previews: PreviewProvider {
-    static var previews: some View {
-        GroupChannelListView()
     }
 }

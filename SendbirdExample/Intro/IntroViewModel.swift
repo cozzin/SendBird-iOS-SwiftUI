@@ -19,10 +19,6 @@ final class IntroViewModel: ObservableObject {
     @Published var alert: AlertIdentifier?
     @Published var user: SBDUser?
     
-    var isLoggedIn: Bool {
-        user != nil
-    }
-    
     var isLoginButtonDisabled: Bool {
         userId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }

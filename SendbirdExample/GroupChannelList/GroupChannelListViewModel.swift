@@ -14,8 +14,13 @@ final class GroupChannelListViewModel: ObservableObject {
     @Published var alert: AlertIdentifier?
     @Published private(set) var channels: [GroupChannel] = []
     
+    let user: SBDUser
     private var isNextChannelsLoading: Bool = false
     private lazy var query: SBDGroupChannelListQuery = createQuery()
+    
+    init(user: SBDUser) {
+        self.user = user
+    }
     
     func refreshChannels() async {
         query = createQuery()

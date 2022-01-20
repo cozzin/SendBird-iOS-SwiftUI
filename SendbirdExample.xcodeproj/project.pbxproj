@@ -19,6 +19,9 @@
 		5FD29D4A2798082E000CBF5E /* GroupChannelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D492798082E000CBF5E /* GroupChannelViewModel.swift */; };
 		5FD29D4D2798F7C8000CBF5E /* SBDBaseMessage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D4C2798F7C8000CBF5E /* SBDBaseMessage+Extension.swift */; };
 		5FD29D512798F8C4000CBF5E /* GroupChannelMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D502798F8C4000CBF5E /* GroupChannelMessageView.swift */; };
+		5FD29D5A279A0F7D000CBF5E /* ProfileSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D59279A0F7D000CBF5E /* ProfileSettingView.swift */; };
+		5FD29D5E279A10C0000CBF5E /* ProfileSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D5D279A10C0000CBF5E /* ProfileSettingViewModel.swift */; };
+		5FD29D62279A146C000CBF5E /* SBDError+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D61279A146C000CBF5E /* SBDError+Extension.swift */; };
 		5FE826BB2796537C0086D338 /* SendbirdExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE826BA2796537C0086D338 /* SendbirdExampleApp.swift */; };
 		5FE826BF2796537C0086D338 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FE826BE2796537C0086D338 /* Assets.xcassets */; };
 		5FE826C22796537C0086D338 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FE826C12796537C0086D338 /* Preview Assets.xcassets */; };
@@ -56,6 +59,9 @@
 		5FD29D492798082E000CBF5E /* GroupChannelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChannelViewModel.swift; sourceTree = "<group>"; };
 		5FD29D4C2798F7C8000CBF5E /* SBDBaseMessage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SBDBaseMessage+Extension.swift"; sourceTree = "<group>"; };
 		5FD29D502798F8C4000CBF5E /* GroupChannelMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupChannelMessageView.swift; sourceTree = "<group>"; };
+		5FD29D59279A0F7D000CBF5E /* ProfileSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingView.swift; sourceTree = "<group>"; };
+		5FD29D5D279A10C0000CBF5E /* ProfileSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingViewModel.swift; sourceTree = "<group>"; };
+		5FD29D61279A146C000CBF5E /* SBDError+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SBDError+Extension.swift"; sourceTree = "<group>"; };
 		5FE826B72796537C0086D338 /* SendbirdExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SendbirdExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FE826BA2796537C0086D338 /* SendbirdExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendbirdExampleApp.swift; sourceTree = "<group>"; };
 		5FE826BE2796537C0086D338 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -134,8 +140,18 @@
 			isa = PBXGroup;
 			children = (
 				5FD29D4C2798F7C8000CBF5E /* SBDBaseMessage+Extension.swift */,
+				5FD29D61279A146C000CBF5E /* SBDError+Extension.swift */,
 			);
 			path = "Sendbird+Extension";
+			sourceTree = "<group>";
+		};
+		5FD29D58279A0F67000CBF5E /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				5FD29D59279A0F7D000CBF5E /* ProfileSettingView.swift */,
+				5FD29D5D279A10C0000CBF5E /* ProfileSettingViewModel.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 		5FE826AE2796537C0086D338 = {
@@ -166,6 +182,7 @@
 				5FD29D382796EDDB000CBF5E /* GroupChannelList */,
 				5FD29D3F2797DD78000CBF5E /* CreateGroupChannel */,
 				5FD29D462797FE4F000CBF5E /* GroupChannel */,
+				5FD29D58279A0F67000CBF5E /* Profile */,
 				5FD29D29279693A1000CBF5E /* Environment.swift */,
 				5FE826BA2796537C0086D338 /* SendbirdExampleApp.swift */,
 				5FE826BE2796537C0086D338 /* Assets.xcassets */,
@@ -341,10 +358,13 @@
 				5FD29D432797DD96000CBF5E /* CreateGroupChannelView.swift in Sources */,
 				5FD29D3E2796F4BA000CBF5E /* GroupChannelListViewModel.swift in Sources */,
 				5FD29D3C2796EDF9000CBF5E /* GroupChannelListView.swift in Sources */,
+				5FD29D5A279A0F7D000CBF5E /* ProfileSettingView.swift in Sources */,
+				5FD29D5E279A10C0000CBF5E /* ProfileSettingViewModel.swift in Sources */,
 				5FD29D482797FE5B000CBF5E /* GroupChannelView.swift in Sources */,
 				5FE826BB2796537C0086D338 /* SendbirdExampleApp.swift in Sources */,
 				5FD29D452797DDA1000CBF5E /* CreateGroupChannelViewModel.swift in Sources */,
 				5FD29D4A2798082E000CBF5E /* GroupChannelViewModel.swift in Sources */,
+				5FD29D62279A146C000CBF5E /* SBDError+Extension.swift in Sources */,
 				5FD29D512798F8C4000CBF5E /* GroupChannelMessageView.swift in Sources */,
 				5FD29D352796B223000CBF5E /* IntroView.swift in Sources */,
 			);

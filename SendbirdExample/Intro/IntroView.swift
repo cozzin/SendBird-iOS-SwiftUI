@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct IntroView: View {
+    
     @StateObject var viewModel = IntroViewModel()
     
     var body: some View {
         NavigationView {
-            if viewModel.isLoggedIn {
-                GroupChannelListView()
+            if let user = viewModel.user {
+                GroupChannelListView(viewModel: .init(user: user))
             } else {
                 loginView
             }
