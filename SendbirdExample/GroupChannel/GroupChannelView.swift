@@ -11,31 +11,58 @@ import SendBirdSDK
 struct GroupChannelView: View {
     
     @ObservedObject private var viewModel: GroupChannelViewModel
-    
+    @State private var errorMessage: String?
+
     init(channel: SBDGroupChannel) {
         _viewModel = .init(initialValue: .init(channel: channel))
     }
     
     var body: some View {
+        VStack {
+            messageList
+            inputView
+        }
+    }
+    
+    private var messageList: some View {
         List(viewModel.messages) { message in
             GroupChannelMessageView(message: message)
+                .id(message)
                 .task {
-                    if viewModel.isFirstMessage(message) {
-                        await viewModel.loadPreviousMessages()
-                    }
+                    guard viewModel.isFirstMessage(message) else { return }
+                    
+                    await viewModel.loadPreviousMessages()
                 }
         }
         .listStyle(.plain)
         .navigationTitle(Text(viewModel.navigationTitle))
+        .task {
+            guard viewModel.isEmpty else { return }
+            
+            await viewModel.loadPreviousMessages()
+        }
         .onAppear {
             viewModel.onAppear()
         }
         .onDisappear {
             viewModel.onDisappear()
         }
-        .task {
-            await viewModel.loadPreviousMessages()
+    }
+    
+    private var inputView: some View {
+        HStack {
+            TextField("Say something...", text: $viewModel.inputText)
+            Button("Send") {
+                Task {
+                    do {
+                        try await viewModel.sendMessage()
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                }
+            }
         }
+        .padding()
     }
 }
 

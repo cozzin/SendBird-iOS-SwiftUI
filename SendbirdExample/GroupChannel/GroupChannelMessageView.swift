@@ -14,11 +14,13 @@ struct GroupChannelMessageView: View {
     
     var body: some View {
         HStack {
-            VStack {
-                Text(message.sender?.nickname ?? "(unknown)")
-                Spacer()
+            if let sender = message.sender {
+                VStack {
+                    Text(sender.nickname ?? "(unknown)")
+                    Spacer()
+                }
+                .padding(.top, 10)
             }
-            .padding(.top, 10)
             
             HStack {
                 Text(message.message)
@@ -31,5 +33,6 @@ struct GroupChannelMessageView: View {
                     .fill(Color(UIColor.secondarySystemBackground))
             )
         }
+        .padding(.vertical, 5)
     }
 }

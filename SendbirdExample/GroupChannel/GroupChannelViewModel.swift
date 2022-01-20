@@ -12,6 +12,8 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
     
     @Published var messages: [SBDBaseMessage] = []
     
+    @Published var inputText: String = ""
+    
     var channelName: String {
         channel.name
     }
@@ -20,10 +22,14 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
         channelName + " (\(channel.memberCount))"
     }
     
+    var isEmpty: Bool {
+        messages.isEmpty
+    }
+    
     private let channel: SBDGroupChannel
     
     private lazy var previousMessagesQuery = channel.createPreviousMessageListQuery()
-    
+            
     private var channelDelegateIdentifier: String {
         "GroupChannelViewModel.\(channel.channelUrl)"
     }
@@ -42,9 +48,11 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
     }
     
     func loadPreviousMessages() async {
-        guard let listQuery = previousMessagesQuery else { return }
+        guard let listQuery = previousMessagesQuery, listQuery.isLoading() == false else {
+            return
+        }
         
-        let (messages, error) = await listQuery.loadPreviousMessages(withLimit: 15, reverse: false)
+        let (messages, error) = await listQuery.loadPreviousMessages(withLimit: 5, reverse: false)
         
         guard error == nil else {
             // TODO: - Error Handling
@@ -53,6 +61,10 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
         
         guard let messages = messages else { return }
         
+        guard messages.isEmpty == false else {
+            return
+        }
+        
         DispatchQueue.main.async { [weak self] in
             self?.messages.insert(contentsOf: messages, at: 0)
         }
@@ -60,6 +72,28 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
     
     func isFirstMessage(_ message: SBDBaseMessage) -> Bool {
         messages.first == message
+    }
+    
+    func sendMessage() async throws {
+        guard let params = SBDUserMessageParams(message: inputText) else { return }
+        
+        let message: SBDUserMessage = try await withCheckedThrowingContinuation { continuation in
+            channel.sendUserMessage(with: params) { message, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                
+                guard let message = message else { return }
+                
+                continuation.resume(returning: message)
+            }
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.inputText = ""
+            self?.messages.append(message)
+        }
     }
 }
 
