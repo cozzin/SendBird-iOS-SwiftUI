@@ -8,7 +8,7 @@
 import Foundation
 import SendBirdSDK
 
-final class GroupChannelViewModel: ObservableObject {
+final class GroupChannelViewModel: NSObject, ObservableObject {
     
     @Published var messages: [SBDBaseMessage] = []
     
@@ -24,8 +24,21 @@ final class GroupChannelViewModel: ObservableObject {
     
     private lazy var previousMessagesQuery = channel.createPreviousMessageListQuery()
     
+    private var channelDelegateIdentifier: String {
+        "GroupChannelViewModel.\(channel.channelUrl)"
+    }
+    
     init(channel: SBDGroupChannel) {
         self.channel = channel
+        super.init()
+    }
+    
+    func onAppear() {
+        SBDMain.add(self, identifier: channelDelegateIdentifier)
+    }
+    
+    func onDisappear() {
+        SBDMain.removeChannelDelegate(forIdentifier: channelDelegateIdentifier)
     }
     
     func loadPreviousMessages() async {
@@ -44,4 +57,18 @@ final class GroupChannelViewModel: ObservableObject {
             self?.messages.insert(contentsOf: messages, at: 0)
         }
     }
+    
+    func isFirstMessage(_ message: SBDBaseMessage) -> Bool {
+        messages.first == message
+    }
+}
+
+// MARK: - SBDChannelDelegate
+
+extension GroupChannelViewModel: SBDChannelDelegate {
+    
+    func channel(_ sender: SBDBaseChannel, didReceive message: SBDBaseMessage) {
+        messages.append(message)
+    }
+    
 }
