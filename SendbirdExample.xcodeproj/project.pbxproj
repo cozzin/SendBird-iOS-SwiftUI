@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F5A7C34279A71E300274E61 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5A7C33279A71E300274E61 /* ImagePicker.swift */; };
 		5FD29D2A279693A1000CBF5E /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D29279693A1000CBF5E /* Environment.swift */; };
 		5FD29D2D279696B5000CBF5E /* SendBirdSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 5FD29D2C279696B5000CBF5E /* SendBirdSDK */; };
 		5FD29D3227969C83000CBF5E /* IntroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD29D3127969C83000CBF5E /* IntroViewModel.swift */; };
@@ -48,6 +49,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5F5A7C33279A71E300274E61 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		5FD29D29279693A1000CBF5E /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		5FD29D3127969C83000CBF5E /* IntroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewModel.swift; sourceTree = "<group>"; };
 		5FD29D342796B223000CBF5E /* IntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroView.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 				5FD29D472797FE5B000CBF5E /* GroupChannelView.swift */,
 				5FD29D492798082E000CBF5E /* GroupChannelViewModel.swift */,
 				5FD29D502798F8C4000CBF5E /* GroupChannelMessageView.swift */,
+				5F5A7C33279A71E300274E61 /* ImagePicker.swift */,
 			);
 			path = GroupChannel;
 			sourceTree = "<group>";
@@ -365,6 +368,7 @@
 				5FD29D452797DDA1000CBF5E /* CreateGroupChannelViewModel.swift in Sources */,
 				5FD29D4A2798082E000CBF5E /* GroupChannelViewModel.swift in Sources */,
 				5FD29D62279A146C000CBF5E /* SBDError+Extension.swift in Sources */,
+				5F5A7C34279A71E300274E61 /* ImagePicker.swift in Sources */,
 				5FD29D512798F8C4000CBF5E /* GroupChannelMessageView.swift in Sources */,
 				5FD29D352796B223000CBF5E /* IntroView.swift in Sources */,
 			);

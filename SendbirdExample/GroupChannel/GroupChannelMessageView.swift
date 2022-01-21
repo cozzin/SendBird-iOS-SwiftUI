@@ -25,7 +25,20 @@ struct GroupChannelMessageView: View {
             }
             
             HStack {
-                Text(message.message)
+                if let fileMessage = message as? SBDFileMessage,
+                   let imageUrlString = fileMessage.url,
+                   let imageUrl = URL(string: imageUrlString) {
+                    AsyncImage(url: imageUrl) { image in
+                        image.resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxHeight: 200)
+                    } placeholder: {
+                        ProgressView()
+                            .frame(height: 200)
+                    }
+                } else {
+                    Text(message.message)
+                }
                 Spacer()
             }
             .padding(.horizontal, 15)

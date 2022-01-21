@@ -13,6 +13,7 @@ struct GroupChannelView: View {
     @ObservedObject private var viewModel: GroupChannelViewModel
     @State private var errorMessage: String?
     @State private var alert: AlertIdentifier?
+    @State private var isShowingImagePicker = false
     @FocusState private var isTyping: Bool
 
     init(channel: SBDGroupChannel) {
@@ -92,6 +93,24 @@ struct GroupChannelView: View {
 
     private func inputView(with scrollViewProxy: ScrollViewProxy) -> some View {
         HStack {
+            if viewModel.isSendingImage {
+                ProgressView()
+            } else {
+                Button(action: {
+                    isShowingImagePicker.toggle()
+                }) {
+                    Image(systemName: "photo.circle.fill")
+                }
+                .sheet(isPresented: $isShowingImagePicker) {
+                    ImagePicker(didPickImage: { image in
+                        Task {
+                            guard let data = image.pngData() else { return }
+                            try await viewModel.sendImage(data)
+                        }
+                    })
+                }
+            }
+            
             TextField("Say something...", text: $viewModel.inputText, onCommit: {
                 sendMessage()
                 isTyping = true

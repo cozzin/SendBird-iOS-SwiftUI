@@ -5,7 +5,7 @@
 //  Created by Ernest Hong on 2022/01/19.
 //
 
-import Foundation
+import UIKit
 import SendBirdSDK
 
 final class GroupChannelViewModel: NSObject, ObservableObject {
@@ -15,10 +15,10 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
     }
     
     @Published var messages: [SBDBaseMessage] = []
-    
     @Published var inputText: String = ""
-    
-    @Published var hasPreviousMessages: Bool = true
+    @Published var inputImage: UIImage?
+    @Published private(set) var isSendingImage: Bool = false
+    @Published private(set) var hasPreviousMessages: Bool = true
     
     var channelName: String {
         channel.name
@@ -115,6 +115,40 @@ final class GroupChannelViewModel: NSObject, ObservableObject {
             self?.inputText = ""
             self?.messages.append(message)
         }
+    }
+    
+    func sendImage(_ data: Data) async throws {
+        DispatchQueue.main.async { [weak self] in
+            self?.isSendingImage = true
+        }
+        
+        defer {
+            DispatchQueue.main.async { [weak self] in
+                self?.isSendingImage = false
+            }
+        }
+        
+        guard let params = SBDFileMessageParams(file: data) else { return }
+        
+        params.thumbnailSizes = [
+            .make(withMaxCGSize: CGSize(width: 100.0, height: 100.0)),
+            .make(withMaxWidth: 200.0, maxHeight: 200.0)
+        ].compactMap { $0 }
+        
+        let message: SBDFileMessage = try await withCheckedThrowingContinuation { continuation in
+            channel.sendFileMessage(with: params) { message, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                
+                guard let message = message else { return }
+                
+                continuation.resume(returning: message)
+            }
+        }
+        
+        messages.append(message)
     }
     
     func deleteMessage(_ message: SBDBaseMessage) async throws {
