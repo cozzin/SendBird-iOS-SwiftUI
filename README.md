@@ -4,13 +4,14 @@
 - Review the [SDK document](https://sendbird.com/docs/chat/v3/ios/guides/group-channel) and give feedback about SDK and Docs as customer view.
 
 ## Implementation Features(example)
-- Singup + Login (with and without AccessToken)
-- Group Channel List
-- Create Group Channel
-- Chatting
-- Image upload
-- delete message
-- Settings > Change user nickname
+- [x] Singup + Login (with and without AccessToken)
+- [x] Group Channel List
+- [x] Create Group Channel
+- [x] Chatting
+- [x] delete message
+- [x] Settings > Change user nickname
+- [ ] Image upload
+
 
 https://user-images.githubusercontent.com/11647461/150435029-7a8100d6-fe4f-4561-b7a3-17448e2d4563.mp4
 
