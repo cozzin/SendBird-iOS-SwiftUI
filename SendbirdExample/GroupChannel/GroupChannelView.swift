@@ -14,6 +14,7 @@ struct GroupChannelView: View {
     @State private var errorMessage: String?
     @State private var alert: AlertIdentifier?
     @State private var isShowingImagePicker = false
+    @State private var messages: [SBDBaseMessage] = []
     @FocusState private var isTyping: Bool
 
     init(channel: SBDGroupChannel) {
@@ -28,65 +29,62 @@ struct GroupChannelView: View {
             }
         }
         .navigationTitle(Text(viewModel.navigationTitle))
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private func scrollView(with scrollViewProxy: ScrollViewProxy) -> some View {
-        ScrollView(.vertical) {
-            LazyVStack {
-                if viewModel.hasPreviousMessages {
-                    loadPreviousMessagesButton(with: scrollViewProxy)
-                }
-                
-                ForEach(viewModel.messages) { message in
-                    GroupChannelMessageView(message: message, onLongPress: {
-                        alert = .longPressMessage(message)
-                    })
-                }
+        ChatScrollView {
+            if viewModel.hasPreviousMessages {
+                loadPreviousMessagesButton(with: scrollViewProxy)
             }
-            .task {
-                guard viewModel.isEmpty else { return }
-                await viewModel.loadPreviousMessages()
-                scrollToBottom(scrollViewProxy)
+            
+            ForEach(viewModel.messages) { message in
+                GroupChannelMessageView(message: message, onLongPress: {
+                    alert = .longPressMessage(message)
+                })
             }
-            .onAppear {
-                viewModel.onAppear()
-            }
-            .onDisappear {
-                viewModel.onDisappear()
-            }
-            .onChange(of: viewModel.messages) { newValue in
-                scrollToBottom(scrollViewProxy)
-            }
-            .alert(item: $alert) { alertIdentifier in
-                switch alertIdentifier {
-                case .longPressMessage(let message):
-                    return Alert(
-                        title: Text("Are you sure you want to delete the message?"),
-                        message: Text(message.message),
-                        primaryButton: .destructive(
-                            Text("Delete"),
-                            action: {
-                                Task {
-                                    try await viewModel.deleteMessage(message)
-                                }
+        }
+        .task {
+            guard viewModel.isEmpty else { return }
+            await viewModel.loadPreviousMessages()
+        }
+        .onAppear {
+            viewModel.onAppear()
+        }
+        .onDisappear {
+            viewModel.onDisappear()
+        }
+        .onChange(of: viewModel.messages) { newValue in
+            self.messages = newValue
+        }
+        .onChange(of: messages) { [messages] newValue in
+            guard messages.last != newValue.last else { return }
+            scrollToBottom(scrollViewProxy)
+        }
+        .alert(item: $alert) { alertIdentifier in
+            switch alertIdentifier {
+            case .longPressMessage(let message):
+                return Alert(
+                    title: Text("Are you sure you want to delete the message?"),
+                    message: Text(message.message),
+                    primaryButton: .destructive(
+                        Text("Delete"),
+                        action: {
+                            Task {
+                                try await viewModel.deleteMessage(message)
                             }
-                        ),
-                        secondaryButton: .cancel()
-                    )
-                }
+                        }
+                    ),
+                    secondaryButton: .cancel()
+                )
             }
         }
     }
     
     private func loadPreviousMessagesButton(with scrollViewProxy: ScrollViewProxy) -> some View {
         Button("Load Previous Messages") {
-            let oldFirstMessage = viewModel.messages.first
-            
             Task {
                 await viewModel.loadPreviousMessages()
-                DispatchQueue.main.async {
-                    scrollViewProxy.scrollTo(viewModel.message(before: oldFirstMessage), anchor: .top)
-                }
             }
         }
     }
